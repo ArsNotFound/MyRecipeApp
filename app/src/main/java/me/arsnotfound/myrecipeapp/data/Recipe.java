@@ -1,14 +1,20 @@
 package me.arsnotfound.myrecipeapp.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Parcelable {
     private static int idCounter = 0;
 
     private final int id;
 
-    private final String name;
+    private String name;
 
     private Difficulty difficulty;
 
@@ -16,15 +22,19 @@ public class Recipe {
 
     private String description;
 
-    private final ArrayList<String> steps;
+    private ArrayList<String> steps;
 
-    public Recipe(String name, Difficulty difficulty, int timeToCook, String description, ArrayList<String> steps) {
-        this.id = idCounter++;
+    public Recipe(String name, Difficulty difficulty, int timeToCook, String description, List<String> steps) {
+        this(idCounter++, name, difficulty, timeToCook, description, steps);
+    }
+
+    private Recipe(int id, String name, Difficulty difficulty, int timeToCook, String description, List<String> steps) {
+        this.id = id;
         this.name = name;
         this.difficulty = difficulty;
         this.timeToCook = timeToCook;
         this.description = description;
-        this.steps = steps;
+        this.steps = new ArrayList<>(steps);
     }
 
     public int getId() {
@@ -33,6 +43,10 @@ public class Recipe {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Difficulty getDifficulty() {
@@ -60,7 +74,11 @@ public class Recipe {
     }
 
     public List<String> getSteps() {
-        return steps;
+        return Collections.unmodifiableList(steps);
+    }
+
+    public void setSteps(List<String> steps) {
+        this.steps = new ArrayList<>(steps);
     }
 
     @Override
@@ -77,4 +95,39 @@ public class Recipe {
     public int hashCode() {
         return id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(difficulty.name());
+        dest.writeInt(timeToCook);
+        dest.writeString(description);
+        dest.writeStringList(steps);
+    }
+
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<>() {
+        @Override
+        public Recipe createFromParcel(Parcel source) {
+            int id = source.readInt();
+            String name = source.readString();
+            Difficulty difficulty = Difficulty.valueOf(source.readString());
+            int timeToCook = source.readInt();
+            String description = source.readString();
+            ArrayList<String> steps = new ArrayList<>();
+            source.readStringList(steps);
+
+            return new Recipe(id, name, difficulty, timeToCook, description, steps);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 }
