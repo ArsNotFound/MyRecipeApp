@@ -63,9 +63,7 @@ public class RecipeAdapter extends ListAdapter<Recipe, RecipeAdapter.RecipeViewH
             super(binding.getRoot());
 
             this.binding = binding;
-            binding.getRoot().setOnClickListener(v -> {
-                onItemClick.accept(getBindingAdapterPosition());
-            });
+            binding.getRoot().setOnClickListener(v -> onItemClick.accept(getBindingAdapterPosition()));
         }
 
         private void bind(Recipe recipe) {
