@@ -10,9 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Recipe implements Parcelable {
-    private static int idCounter = 0;
-
-    private final int id;
+    private final long id;
 
     private String name;
 
@@ -25,10 +23,10 @@ public class Recipe implements Parcelable {
     private ArrayList<String> steps;
 
     public Recipe(String name, Difficulty difficulty, int timeToCook, String description, List<String> steps) {
-        this(idCounter++, name, difficulty, timeToCook, description, steps);
+        this(-1, name, difficulty, timeToCook, description, steps);
     }
 
-    private Recipe(int id, String name, Difficulty difficulty, int timeToCook, String description, List<String> steps) {
+    public Recipe(long id, String name, Difficulty difficulty, int timeToCook, String description, List<String> steps) {
         this.id = id;
         this.name = name;
         this.difficulty = difficulty;
@@ -37,7 +35,7 @@ public class Recipe implements Parcelable {
         this.steps = new ArrayList<>(steps);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -93,7 +91,7 @@ public class Recipe implements Parcelable {
 
     @Override
     public int hashCode() {
-        return id;
+        return (int) (id ^ (id >>> 32));
     }
 
     @Override
@@ -103,7 +101,7 @@ public class Recipe implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(difficulty.name());
         dest.writeInt(timeToCook);
@@ -114,7 +112,7 @@ public class Recipe implements Parcelable {
     public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<>() {
         @Override
         public Recipe createFromParcel(Parcel source) {
-            int id = source.readInt();
+            long id = source.readLong();
             String name = source.readString();
             Difficulty difficulty = Difficulty.valueOf(source.readString());
             int timeToCook = source.readInt();
