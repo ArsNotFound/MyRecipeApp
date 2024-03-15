@@ -19,9 +19,16 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(binding.fragmentContainerView.getId(), RecipeListFragment.class, null)
+                    .disallowAddToBackStack()
                     .commit();
         }
 
         setContentView(binding.getRoot());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }
