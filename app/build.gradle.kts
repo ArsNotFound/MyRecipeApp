@@ -37,12 +37,17 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.fragment)
+    implementation(libs.appcompat)
+    implementation(libs.constraintlayout)
+    implementation(libs.recyclerview)
+    implementation(libs.fragment)
     implementation(libs.material)
+
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+    
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+
+    androidTestImplementation(libs.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
