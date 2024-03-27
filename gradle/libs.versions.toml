@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.0"
+agp = "8.3.1"
 
 androidxAppCompat = "1.6.1"
 androidxConstraintLayout = "2.1.4"
